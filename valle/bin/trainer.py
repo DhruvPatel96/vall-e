@@ -43,6 +43,11 @@ from typing import Any, Dict, Optional, Tuple, Union
 import torch
 import torch.multiprocessing as mp
 import torch.nn as nn
+from torch import Tensor
+from torch.cuda.amp import GradScaler
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.tensorboard import SummaryWriter
+
 from icefall.checkpoint import load_checkpoint, remove_checkpoints
 from icefall.checkpoint import save_checkpoint as save_checkpoint_impl
 from icefall.checkpoint import (
@@ -53,14 +58,11 @@ from icefall.dist import cleanup_dist, setup_dist
 from icefall.env import get_env_info
 from icefall.hooks import register_inf_check_hooks
 from icefall.utils import AttributeDict, MetricsTracker, setup_logger, str2bool
+
 from lhotse import CutSet
 from lhotse.cut import Cut
 from lhotse.dataset.sampling.base import CutSampler
 from lhotse.utils import fix_random_seed
-from torch import Tensor
-from torch.cuda.amp import GradScaler
-from torch.nn.parallel import DistributedDataParallel as DDP
-from torch.utils.tensorboard import SummaryWriter
 
 from valle.data import TtsDataModule
 from valle.models import add_model_arguments, get_model
